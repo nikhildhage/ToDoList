@@ -11,7 +11,7 @@ try {
     
     //Display Success Message
     $Success_message="Connected to database successfully!";
-    echo $Success_message="Connected to database successfully!";
+    echo $Success_message;
 } catch (PDOException $e) {
     // Catch any errors and display
     $error_message="Database Error ";
