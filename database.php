@@ -1,7 +1,7 @@
 <?php
 
 // Database connection settings
-$dsn = "mysql:localhost;dbname='toDoList'";
+$dsn = "mysql:localhost; dbname=todolist";
 $db_user = 'root';
 $db_pass = ' ';
 
