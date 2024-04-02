@@ -25,7 +25,7 @@ $category = filter_input(INPUT_GET, "category", FILTER_UNSAFE_RAW);
     <div id="app-container" class="container-xl m-3 p-3 bg-light rounded border border-2">
         <main class="d-flex flex-column justify-content-center p-3">
             <?php if (!$newTitle || !$newDescription || !$newCategory) { ?>
-                <section id="toDoList" class="my-5">
+                <section id="emptyToDoList" class="my-5">
                     <div class=" row">
                         <div class="col-sm-6 col-lg-8 col-xl-12">
                             <div class="card">
@@ -65,15 +65,23 @@ $category = filter_input(INPUT_GET, "category", FILTER_UNSAFE_RAW);
                 </section>
             <?php } else { ?>
                 <?php
-                $outputLabel = "New Title:" . " ";
-                echo  "<script>console.log('" . $outputLabel .  $newTitle . "');</script>";
+                $outputTitle = "New Title:" . " ";
+                $outputDescription = "New Description:" . " ";
+                $outputCategory = "New Category:" . " ";
+                echo  "<script>
+                        console.log('" . $outputTitle .  $newTitle . "');
+                        console.log('" . $outputDescription .  $newDescription . "');
+                        console.log('" . $outputCategory .  $newCategory . "');
+                    </script>";
                 ?>
                 <?php include("database.php"); ?>
 
-                /* Show the To Do List with data if the data exists*/
+                <?php
+                // Show the To Do List with data if the data exists **/
+                ?>
                 <?php if (($title || $description || $category)  || ($newTitle || $newDescription || $newCategory)) { ?>
                     <section id="toDoList" class="my-5">
-                        <div class=" row">
+                        <div class=" row g-3">
                             <div class="col-sm-6 col-lg-8 col-xl-12">
                                 <div class="card">
                                     <div class="card-header display-4 bg-primary">
@@ -88,11 +96,16 @@ $category = filter_input(INPUT_GET, "category", FILTER_UNSAFE_RAW);
                                     </div>
                                 </div>
                             </div>
+                            <div class="col-sm-8 d-flex">
+                                <a href="index.php" class="btn btn-primary">Go Back</a>
+                            </div>
                         </div>
                     </section>
                 <?php } ?>
 
-                /* Execute query if data exists*/
+                <?php
+                // Execute query if data exists
+                ?>
                 <?php if (($title || $description || $category)  || ($newTitle || $newDescription || $newCategory)) {
                     $query = "SELECT * FROM todoitems 
                                 WHERE Title = :title ";
