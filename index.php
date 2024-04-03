@@ -1,13 +1,28 @@
 <?php
+include("database.php");
+
+$query = "SELECT * FROM todoitems";
+$statement = $db->prepare($query);
+$statement->execute();
+$results = $statement->fetchAll();
+$statement->closeCursor();
+
+foreach ($results as $result) {
+    $id = $result["ItemNum"];
+    $newTitle = $result["Title"];
+    $newDescription = $result["Description"];
+}
+echo $results;
+
 //POST data
 $newTitle = filter_input(INPUT_POST, "newTitle", FILTER_UNSAFE_RAW);
 $newDescription = filter_input(INPUT_POST, "newDescription", FILTER_UNSAFE_RAW);
-$newCategory = filter_input(INPUT_POST, "newCategory", FILTER_UNSAFE_RAW);
+
 
 //GET Data
 $title = filter_input(INPUT_GET, "title", FILTER_UNSAFE_RAW);
 $description = filter_input(INPUT_GET, "description", FILTER_UNSAFE_RAW);
-$category = filter_input(INPUT_GET, "category", FILTER_UNSAFE_RAW);
+
 ?>
 
 <!DOCTYPE html>
@@ -24,7 +39,7 @@ $category = filter_input(INPUT_GET, "category", FILTER_UNSAFE_RAW);
 <body>
     <div id="app-container" class="container-xl m-3 p-3 bg-light rounded border border-2">
         <main class="d-flex flex-column justify-content-center p-3">
-            <?php if (!$newTitle || !$newDescription || !$newCategory) { ?>
+            <?php if (!$newTitle || !$newDescription) { ?>
                 <section id="emptyToDoList" class="my-5">
                     <div class=" row">
                         <div class="col-sm-6 col-lg-8 col-xl-12">
@@ -53,10 +68,6 @@ $category = filter_input(INPUT_GET, "category", FILTER_UNSAFE_RAW);
                                 <label for="newDescription" class="form-label">Description</label>
                                 <input id="newDescription" name="newDescription" type="text" placeholder="Ex: Description" class="form-control">
                             </div>
-                            <div class="col-lg-12 form-group">
-                                <label for="newCategory" class="form-label">Category</label>
-                                <input id="newCategory" name="newCategory" type="text" placeholder="Ex: Category" class="form-control">
-                            </div>
                             <div class="col-sm-8 d-flex">
                                 <button type="submit" class="btn btn-primary">Add Item</button>
                             </div>
@@ -67,19 +78,16 @@ $category = filter_input(INPUT_GET, "category", FILTER_UNSAFE_RAW);
                 <?php
                 $outputTitle = "New Title:" . " ";
                 $outputDescription = "New Description:" . " ";
-                $outputCategory = "New Category:" . " ";
                 echo  "<script>
                         console.log('" . $outputTitle .  $newTitle . "');
                         console.log('" . $outputDescription .  $newDescription . "');
-                        console.log('" . $outputCategory .  $newCategory . "');
                     </script>";
                 ?>
-                <?php include("database.php"); ?>
 
                 <?php
                 // Show the To Do List with data if the data exists **/
                 ?>
-                <?php if (($title || $description || $category)  || ($newTitle || $newDescription || $newCategory)) { ?>
+                <?php if (($title || $description)  || ($newTitle || $newDescription)) { ?>
                     <section id="toDoList" class="my-5">
                         <div class=" row g-3">
                             <div class="col-sm-6 col-lg-8 col-xl-12">
@@ -106,19 +114,16 @@ $category = filter_input(INPUT_GET, "category", FILTER_UNSAFE_RAW);
                 <?php
                 // Execute query if data exists
                 ?>
-                <?php if (($title || $description || $category)  || ($newTitle || $newDescription || $newCategory)) {
-                    $query = "SELECT * FROM todoitems 
-                                WHERE Title = :title ";
+                <?php if (($title || $description)  || ($newTitle || $newDescription)) {
+                    $query = "INSERT INTO todoitems
+                                (Title, Description)
+                                VALUES (:newTitle, :newDescription)";
                     $statement = $db->prepare($query);
-                    if ($title) {
-                        $statement->bindValue(":title", $title);
-                    } else {
-                        $statement->bindValue(":title", $newTitle);
-                    }
+                    $statement->bindValue(':newTitle', $newTitle);
+                    $statement->bindValue(':newDescription', $newDescription);
                     $statement->execute();
                     $results = $statement->fetchAll();
                     $statement->closeCursor();
-                    echo $results;
                 } ?>
             <?php } ?>
         </main>
