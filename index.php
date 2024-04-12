@@ -1,27 +1,25 @@
+<?php {
+    include("database.php");
+
+    $query = "SELECT * FROM todoitems ";
+    $statement = $db->prepare($query);
+
+    $statement->execute();
+    $results = $statement->fetchAll();
+    $statement->closeCursor();
+    echo $results;
+} ?>
+
 <?php
-include("database.php");
-
-$query = "SELECT * FROM todoitems";
-$statement = $db->prepare($query);
-$statement->execute();
-$results = $statement->fetchAll();
-$statement->closeCursor();
-
-foreach ($results as $result) {
-    $id = $result["ItemNum"];
-    $newTitle = $result["Title"];
-    $newDescription = $result["Description"];
-}
-echo $results;
 
 //POST data
 $newTitle = filter_input(INPUT_POST, "newTitle", FILTER_UNSAFE_RAW);
 $newDescription = filter_input(INPUT_POST, "newDescription", FILTER_UNSAFE_RAW);
 
-
 //GET Data
 $title = filter_input(INPUT_GET, "title", FILTER_UNSAFE_RAW);
 $description = filter_input(INPUT_GET, "description", FILTER_UNSAFE_RAW);
+
 
 ?>
 
@@ -48,9 +46,22 @@ $description = filter_input(INPUT_GET, "description", FILTER_UNSAFE_RAW);
                                     TO DO List
                                 </div>
                                 <div class="card-body">
-                                    <div>
-                                        <p>No Data </p>
-                                    </div>
+                                    <table class="table table-bordered">
+                                        <thead class="table-dark">
+                                            <tr class=>
+                                                <th>Title</th>
+                                                <th>Description</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php foreach ($results as $result) {
+                                                echo "<tr>";
+                                                echo "<td>" . $result['Title'] . "</td>";
+                                                echo "<td>" . $result['Description'] . "</td>";
+                                                echo "</tr>";
+                                            } ?>
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>
@@ -60,21 +71,22 @@ $description = filter_input(INPUT_GET, "description", FILTER_UNSAFE_RAW);
                 <section id="add-item-form" class="my-3">
                     <form action="<?php echo $_SERVER['PHP_SELF'] ?>" method="POST" class="border border-2 py-3">
                         <div class="row g-3 m-3">
-                            <div class="col-12 form-group form-group-inline">
-                                <label for="newTitle" class="control control-left form-label">Title</label>
-                                <input id="newTitle" name="newTitle" type="text" placeholder="Ex: Title" class="form-control">
+                            <div class="col-12 form-group form-group-inline ">
+                                <label for="newTitle" class="control control-left form-label ">Title</label>
+                                <input id="newTitle" name="newTitle" type="text" placeholder="Ex: Title" class="form-control" style="width:30em" required>
                             </div>
                             <div class="col-12 form-group">
-                                <label for="newDescription" class="form-label">Description</label>
-                                <input id="newDescription" name="newDescription" type="text" placeholder="Ex: Description" class="form-control">
+                                <label for="newDescription" class="form-label mx-3">Description</label>
+                                <input id="newDescription" name="newDescription" type="text" placeholder="Ex: Description" class="form-control" style="width:30em" required>
                             </div>
                             <div class="col-sm-8 d-flex">
-                                <button type="submit" class="btn btn-primary">Add Item</button>
+                                <button type="submit" class="btn btn-primary" style="width:30em">Add Item</button>
                             </div>
                         </div>
                     </form>
                 </section>
             <?php } else { ?>
+
                 <?php
                 $outputTitle = "New Title:" . " ";
                 $outputDescription = "New Description:" . " ";
@@ -83,6 +95,24 @@ $description = filter_input(INPUT_GET, "description", FILTER_UNSAFE_RAW);
                         console.log('" . $outputDescription .  $newDescription . "');
                     </script>";
                 ?>
+
+                <?php if (($title || $description) || ($newTitle || $newDescription)) {
+                    $query = "SELECT * FROM todoitems 
+                                WHERE Title = :title and Description=:description";
+                    $statement = $db->prepare($query);
+                    if ($title && $description) {
+                        $statement->bindValue(":title", $title);
+                        $statement->bindValue(":description", $description);
+                    } else {
+                        $statement->bindValue(":title", $newTitle);
+                        $statement->bindValue(":description", $newDescription);
+                    }
+                    $statement->execute();
+                    $results = $statement->fetchAll();
+                    $statement->closeCursor();
+                    echo $results;
+                } ?>
+
 
                 <?php
                 // Show the To Do List with data if the data exists **/
@@ -96,11 +126,24 @@ $description = filter_input(INPUT_GET, "description", FILTER_UNSAFE_RAW);
                                         TO DO List
                                     </div>
                                     <div class="card-body">
-                                        <ul class="list-group list-group-flush">
-                                            <li class="list-group-item">An item</li>
-                                            <li class="list-group-item">A second item</li>
-                                            <li class="list-group-item">A third item</li>
-                                        </ul>
+                                        <table class="table table-bordered">
+                                            <thead class="table-dark">
+                                                <tr class=>
+                                                    <th>Title</th>
+                                                    <th>Description</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <?php foreach ($results as $result) {
+                                                    $newTitle = $result['Title'];
+                                                    $newDescription = $result['Description'];
+                                                    echo "<tr>";
+                                                    echo "<td>$newTitle</td>";
+                                                    echo "<td>$newDescription</td>";
+                                                    echo "</tr>";
+                                                } ?>
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
                             </div>
@@ -111,10 +154,8 @@ $description = filter_input(INPUT_GET, "description", FILTER_UNSAFE_RAW);
                     </section>
                 <?php } ?>
 
-                <?php
-                // Execute query if data exists
-                ?>
                 <?php if (($title || $description)  || ($newTitle || $newDescription)) {
+                    // Execute insert query if data exists
                     $query = "INSERT INTO todoitems
                                 (Title, Description)
                                 VALUES (:newTitle, :newDescription)";
