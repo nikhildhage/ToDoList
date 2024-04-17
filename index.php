@@ -27,6 +27,8 @@ $results = $statement->fetchAll();
 $statement->closeCursor();
 ?>
 
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -57,6 +59,7 @@ $statement->closeCursor();
                                         <tr>
                                             <th>Title</th>
                                             <th>Description</th>
+                                            <th>Delete</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -67,6 +70,8 @@ $statement->closeCursor();
                                                 echo "<tr>";
                                                 echo "<td>" . $result['Title'] . "</td>";
                                                 echo "<td>" . $result['Description'] . "</td>";
+                                                echo '<td><a type=button class="btn btn-danger">Delete</a></Td>';
+
                                                 echo "</tr>";
                                             }
                                         } else {
