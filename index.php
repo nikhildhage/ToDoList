@@ -91,13 +91,13 @@ $statement->closeCursor();
             <section id="add-item-form" class="my-3">
                 <form action="<?php echo $_SERVER['PHP_SELF'] ?>" method="POST" class="border border-2 py-3">
                     <div class="row g-3 m-3">
-                        <div class="col-12 form-group form-group-inline ">
+                        <div class="col-lg-12 form-group  ">
                             <label for="newTitle" class="control control-left form-label ">Title</label>
-                            <input id="newTitle" name="newTitle" type="text" placeholder="Ex: Title" class="form-control" style="width:30em" required>
+                            <input id="newTitle" name="newTitle" type="text" placeholder="Ex: Title" class="form-control" required>
                         </div>
-                        <div class="col-12 form-group">
+                        <div class="col-lg-12 form-group">
                             <label for="newDescription" class="form-label mx-3">Description</label>
-                            <input id="newDescription" name="newDescription" type="text" placeholder="Ex: Description" class="form-control" style="width:30em" required>
+                            <input id="newDescription" name="newDescription" type="text" placeholder="Ex: Description" class="form-control" required>
                         </div>
                         <div class="col-sm-8 d-flex">
                             <button type="submit" class="btn btn-primary" style="width:30em">Add Item</button>
