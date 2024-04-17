@@ -1,17 +1,13 @@
-<?php {
-    include("database.php");
-
-    $query = "SELECT * FROM todoitems ";
-    $statement = $db->prepare($query);
-
-    $statement->execute();
-    $results = $statement->fetchAll();
-    $statement->closeCursor();
-    echo $results;
-} ?>
+<?= include("database.php"); ?>
+<?php
+$query = "SELECT * FROM todoitems";
+$statement = $db->prepare($query);
+$statement->execute();
+$results = $statement->fetchAll();
+$statement->closeCursor();
+?>
 
 <?php
-
 //POST data
 $newTitle = filter_input(INPUT_POST, "newTitle", FILTER_UNSAFE_RAW);
 $newDescription = filter_input(INPUT_POST, "newDescription", FILTER_UNSAFE_RAW);
@@ -19,8 +15,6 @@ $newDescription = filter_input(INPUT_POST, "newDescription", FILTER_UNSAFE_RAW);
 //GET Data
 $title = filter_input(INPUT_GET, "title", FILTER_UNSAFE_RAW);
 $description = filter_input(INPUT_GET, "description", FILTER_UNSAFE_RAW);
-
-
 ?>
 
 <!DOCTYPE html>
@@ -37,6 +31,9 @@ $description = filter_input(INPUT_GET, "description", FILTER_UNSAFE_RAW);
 <body>
     <div id="app-container" class="container-xl m-3 p-3 bg-light rounded border border-2">
         <main class="d-flex flex-column justify-content-center p-3">
+            <?php
+            // Show the TO DO List when item form is does not have data or has data
+            ?>
             <?php if (!$newTitle || !$newDescription) { ?>
                 <section id="emptyToDoList" class="my-5">
                     <div class=" row">
@@ -46,20 +43,22 @@ $description = filter_input(INPUT_GET, "description", FILTER_UNSAFE_RAW);
                                     TO DO List
                                 </div>
                                 <div class="card-body">
-                                    <table class="table table-bordered">
+                                    <table class="table table-striped table-hover">
                                         <thead class="table-dark">
-                                            <tr class=>
+                                            <tr>
                                                 <th>Title</th>
                                                 <th>Description</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <?php foreach ($results as $result) {
+                                            <?php
+                                            foreach ($results as $result) {
                                                 echo "<tr>";
                                                 echo "<td>" . $result['Title'] . "</td>";
                                                 echo "<td>" . $result['Description'] . "</td>";
                                                 echo "</tr>";
-                                            } ?>
+                                            }
+                                            ?>
                                         </tbody>
                                     </table>
                                 </div>
@@ -90,29 +89,21 @@ $description = filter_input(INPUT_GET, "description", FILTER_UNSAFE_RAW);
                 <?php
                 $outputTitle = "New Title:" . " ";
                 $outputDescription = "New Description:" . " ";
+                $outputCurrentTitle = "Current Title:" . " ";
+                $outputCurrentDescription = "Current Description:" . " ";
                 echo  "<script>
                         console.log('" . $outputTitle .  $newTitle . "');
                         console.log('" . $outputDescription .  $newDescription . "');
                     </script>";
                 ?>
 
-                <?php if (($title || $description) || ($newTitle || $newDescription)) {
-                    $query = "SELECT * FROM todoitems 
-                                WHERE Title = :title and Description=:description";
-                    $statement = $db->prepare($query);
-                    if ($title && $description) {
-                        $statement->bindValue(":title", $title);
-                        $statement->bindValue(":description", $description);
-                    } else {
-                        $statement->bindValue(":title", $newTitle);
-                        $statement->bindValue(":description", $newDescription);
-                    }
-                    $statement->execute();
-                    $results = $statement->fetchAll();
-                    $statement->closeCursor();
-                    echo $results;
-                } ?>
-
+                <?php
+                $query = "SELECT * FROM todoitems ";
+                $statement = $db->prepare($query);
+                $statement->execute();
+                $results = $statement->fetchAll();
+                $statement->closeCursor();
+                ?>
 
                 <?php
                 // Show the To Do List with data if the data exists **/
@@ -135,13 +126,12 @@ $description = filter_input(INPUT_GET, "description", FILTER_UNSAFE_RAW);
                                             </thead>
                                             <tbody>
                                                 <?php foreach ($results as $result) {
-                                                    $newTitle = $result['Title'];
-                                                    $newDescription = $result['Description'];
                                                     echo "<tr>";
-                                                    echo "<td>$newTitle</td>";
-                                                    echo "<td>$newDescription</td>";
+                                                    echo "<td>" . $result['Title'] . "</td>";
+                                                    echo "<td>" . $result['Description'] . "</td>";
                                                     echo "</tr>";
-                                                } ?>
+                                                }
+                                                ?>
                                             </tbody>
                                         </table>
                                     </div>
