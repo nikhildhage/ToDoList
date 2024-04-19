@@ -15,7 +15,6 @@ if (!empty($newTitle) && !empty($newDescription)) {
     $insertStatement->closeCursor();
     // Redirect to the same page to prevent form re-submission on refresh
     header('Location: ' . $_SERVER['PHP_SELF']);
-    exit();
 }
 
 
@@ -44,17 +43,17 @@ $statement->closeCursor();
     <!--App-->
     <div id="app-container" class="container-xl m-3 p-3 bg-light rounded border border-2">
         <main class="d-flex flex-column justify-content-center p-3">
-            <? //Show TO DO List = 
+            <?php //Show TO DO List 
             ?>
             <section id="toDoList" class="my-5">
                 <div class="row">
                     <div class="col-sm-6 col-lg-8 col-xl-12">
-                        <div class="card">
+                        <div class="card text-center">
                             <div class="card-header display-4 bg-primary">
                                 TO DO List
                             </div>
-                            <div class="card-body">
-                                <table class="table table-striped table-hover">
+                            <div class="table-responsive">
+                                <table class=" table table-striped table-hover ">
                                     <thead class="table-dark">
                                         <tr>
                                             <th>Title</th>
@@ -62,21 +61,24 @@ $statement->closeCursor();
                                             <th>Delete</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody class="table-group-divider table-divider-color table-primary">
                                         <?php
-
                                         if (!empty($results)) {
                                             foreach ($results as $result) {
                                                 echo "<tr>";
                                                 echo "<td>" . $result['Title'] . "</td>";
                                                 echo "<td>" . $result['Description'] . "</td>";
-                                                echo '<td><a type=button class="btn btn-danger">Delete</a></Td>';
-
+                                                echo "<td>";
+                                                echo '<form action="delete_record.php" method="POST">';
+                                                echo "<input type='hidden' name='id' value=" . $result['ItemNum'] . ">";
+                                                echo "<button type='submit' class='btn btn-danger'>Delete</button>";
+                                                echo "</form>";
+                                                echo "</td>";
                                                 echo "</tr>";
                                             }
                                         } else {
                                             echo "<tr>";
-                                            echo "<td>NO Data Found<td>";
+                                            echo "<td>NO Data Found</td>";
                                             echo "</tr>";
                                         }
                                         ?>
@@ -108,6 +110,8 @@ $statement->closeCursor();
         </main>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+</body>
+
 </body>
 
 </html>
