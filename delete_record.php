@@ -8,6 +8,6 @@ if ($id) {
     $statement->execute();
     $results = $statement->fetchAll();
     $statement->closeCursor();
-    $deleted = TRUE;
 }
+
 header('Location: ' . "index.php");
