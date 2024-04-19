@@ -5,6 +5,7 @@ include("database.php");
 $newTitle = filter_input(INPUT_POST, 'newTitle', FILTER_UNSAFE_RAW);
 $newDescription = filter_input(INPUT_POST, 'newDescription', FILTER_UNSAFE_RAW);
 
+
 // Insert new item if form data is posted
 if (!empty($newTitle) && !empty($newDescription)) {
     $insertQuery = "INSERT INTO todoitems (Title, Description) VALUES (:newTitle, :newDescription)";
@@ -16,6 +17,7 @@ if (!empty($newTitle) && !empty($newDescription)) {
     // Redirect to the same page to prevent form re-submission on refresh
     header('Location: ' . $_SERVER['PHP_SELF']);
 }
+
 
 
 // Fetch all items from the database to display
@@ -48,7 +50,7 @@ $statement->closeCursor();
             <section id="toDoList" class="my-5">
                 <div class="row">
                     <div class="col-sm-6 col-lg-8 col-xl-12">
-                        <div class="card text-center">
+                        <div class="card">
                             <div class="card-header display-4 bg-primary">
                                 TO DO List
                             </div>
@@ -58,19 +60,25 @@ $statement->closeCursor();
                                         <tr>
                                             <th>Title</th>
                                             <th>Description</th>
-                                            <th>Delete</th>
+                                            <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody class="table-group-divider table-divider-color table-primary">
                                         <?php
+                                        $id = "";
+                                        $title = "";
+                                        $description = "";
                                         if (!empty($results)) {
                                             foreach ($results as $result) {
-                                                echo "<tr>";
-                                                echo "<td>" . $result['Title'] . "</td>";
-                                                echo "<td>" . $result['Description'] . "</td>";
+                                                $id = $result['ItemNum'];
+                                                $title = $result['Title'];
+                                                $description = $result['Description'];
+                                                echo "<tr'>";
+                                                echo "<td><p class='h4'>" . $title . "</p></td>";
+                                                echo "<td><p class='h4'>" . $description . "</p></td>";
                                                 echo "<td>";
                                                 echo '<form action="delete_record.php" method="POST">';
-                                                echo "<input type='hidden' name='id' value=" . $result['ItemNum'] . ">";
+                                                echo "<input type='hidden' name='id' value=" . $id . ">";
                                                 echo "<button type='submit' class='btn btn-danger'>Delete</button>";
                                                 echo "</form>";
                                                 echo "</td>";
@@ -78,7 +86,7 @@ $statement->closeCursor();
                                             }
                                         } else {
                                             echo "<tr>";
-                                            echo "<td>NO Data Found</td>";
+                                            echo "<td>NO Data Found</td><td></td>";
                                             echo "</tr>";
                                         }
                                         ?>
@@ -92,7 +100,7 @@ $statement->closeCursor();
 
             <section id="add-item-form" class="my-3">
                 <form action="<?php echo $_SERVER['PHP_SELF'] ?>" method="POST" class="border border-2 py-3">
-                    <div class="row g-3 m-3">
+                    <div class="row g-4 m-3">
                         <div class="col-lg-12 form-group  ">
                             <label for="newTitle" class="control control-left form-label ">Title</label>
                             <input id="newTitle" name="newTitle" type="text" placeholder="Ex: Title" class="form-control" required>
